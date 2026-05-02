@@ -518,9 +518,18 @@ footer{background:#1a0a00;color:white;padding:52px 32px 28px;border-top:4px soli
 .ftextarea::placeholder{color:rgba(255,255,255,.2);}
 .body-editor{background:rgba(255,255,255,.04);border:1px solid var(--abd);min-height:360px;padding:18px;color:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.8;outline:none;transition:border-color .2s;}
 .body-editor:focus{border-color:var(--aa);}
-.editor-toolbar{display:flex;gap:4px;padding:8px;background:var(--asb);border:1px solid var(--abd);border-bottom:none;}
-.tbtn{background:none;border:none;color:rgba(255,255,255,.5);padding:5px 9px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;transition:all .15s;font-weight:700;}
-.tbtn:hover{background:rgba(255,255,255,.08);color:white;}
+.editor-toolbar{display:flex;flex-wrap:wrap;gap:3px;padding:8px;background:var(--asb);border:1px solid var(--abd);border-bottom:none;align-items:center;}
+.tbtn{background:none;border:1px solid transparent;color:rgba(255,255,255,.6);padding:4px 8px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all .15s;font-weight:700;border-radius:3px;line-height:1;}
+.tbtn:hover{background:rgba(255,255,255,.08);color:white;border-color:rgba(255,255,255,.15);}
+.tbtn.active{background:var(--aa);color:white;border-color:var(--aa);}
+.tbtn-sep{width:1px;height:20px;background:rgba(255,255,255,.15);margin:0 4px;}
+.tbtn-color{width:22px;height:22px;padding:0;border:2px solid rgba(255,255,255,.3);border-radius:3px;cursor:pointer;}
+.tbtn-select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:4px 6px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;border-radius:3px;outline:none;}
+.tbtn-select:hover{background:rgba(255,255,255,.12);}
+.editor-color-picker{position:absolute;z-index:999;background:#1a1a24;border:1px solid rgba(255,255,255,.15);padding:8px;display:none;flex-wrap:wrap;gap:5px;width:160px;border-radius:4px;}
+.editor-color-picker.open{display:flex;}
+.ecolor{width:22px;height:22px;border-radius:3px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;}
+.ecolor:hover{border-color:white;}
 .panel{background:var(--asb);border:1px solid var(--abd);padding:18px;}
 .panel-ttl{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--abd);}
 .swatch-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px;}
@@ -2092,12 +2101,69 @@ async function handleModalSubscribe(e){
           </div>
           <div class="fgroup">
             <label class="flabel">Body</label>
-            <div class="editor-toolbar">
-              <button class="tbtn" onclick="execCmd('bold')"><b>B</b></button>
-              <button class="tbtn" onclick="execCmd('italic')"><i>I</i></button>
-              <button class="tbtn" onclick="execCmd('underline')"><u>U</u></button>
-              <button class="tbtn" onclick="insertH2()">H2</button>
-              <button class="tbtn" onclick="execCmd('insertUnorderedList')">• List</button>
+            <div class="editor-toolbar" id="editorToolbar">
+              <!-- Text style -->
+              <select class="tbtn-select" onchange="execCmdVal('fontName',this.value);this.value=''" title="Font">
+                <option value="">Font</option>
+                <option value="'DM Sans',sans-serif">DM Sans</option>
+                <option value="'Playfair Display',serif">Playfair</option>
+                <option value="'Anton',sans-serif">Anton</option>
+                <option value="'Barlow Condensed',sans-serif">Barlow</option>
+                <option value="Georgia,serif">Georgia</option>
+                <option value="monospace">Mono</option>
+              </select>
+              <select class="tbtn-select" onchange="execCmdVal('fontSize',this.value);this.value=''" title="Size">
+                <option value="">Size</option>
+                <option value="1">XS</option>
+                <option value="2">S</option>
+                <option value="3">M</option>
+                <option value="4">L</option>
+                <option value="5">XL</option>
+                <option value="6">XXL</option>
+                <option value="7">3XL</option>
+              </select>
+              <div class="tbtn-sep"></div>
+              <!-- Format -->
+              <button class="tbtn" onclick="execCmd('bold')" title="Bold"><b>B</b></button>
+              <button class="tbtn" onclick="execCmd('italic')" title="Italic"><i>I</i></button>
+              <button class="tbtn" onclick="execCmd('underline')" title="Underline"><u>U</u></button>
+              <button class="tbtn" onclick="execCmd('strikeThrough')" title="Strikethrough"><s>S</s></button>
+              <div class="tbtn-sep"></div>
+              <!-- Headings -->
+              <button class="tbtn" onclick="execBlock('h1')" title="Heading 1">H1</button>
+              <button class="tbtn" onclick="execBlock('h2')" title="Heading 2">H2</button>
+              <button class="tbtn" onclick="execBlock('h3')" title="Heading 3">H3</button>
+              <button class="tbtn" onclick="execBlock('p')" title="Paragraph">¶</button>
+              <div class="tbtn-sep"></div>
+              <!-- Alignment -->
+              <button class="tbtn" onclick="execCmd('justifyLeft')" title="Align Left">⬛◻◻</button>
+              <button class="tbtn" onclick="execCmd('justifyCenter')" title="Center">◻⬛◻</button>
+              <button class="tbtn" onclick="execCmd('justifyRight')" title="Align Right">◻◻⬛</button>
+              <div class="tbtn-sep"></div>
+              <!-- Lists & indent -->
+              <button class="tbtn" onclick="execCmd('insertUnorderedList')" title="Bullet List">• List</button>
+              <button class="tbtn" onclick="execCmd('insertOrderedList')" title="Numbered List">1. List</button>
+              <button class="tbtn" onclick="execCmd('indent')" title="Indent">→</button>
+              <button class="tbtn" onclick="execCmd('outdent')" title="Outdent">←</button>
+              <div class="tbtn-sep"></div>
+              <!-- Color -->
+              <button class="tbtn" onclick="toggleColorPicker('textColor')" title="Text Color" style="position:relative">A <span id="curTextColor" style="display:inline-block;width:10px;height:10px;background:#ff2d78;border-radius:2px;margin-left:2px;vertical-align:middle;"></span></button>
+              <button class="tbtn" onclick="toggleColorPicker('hiliteColor')" title="Highlight" style="position:relative">🖍</button>
+              <div class="tbtn-sep"></div>
+              <!-- Insert -->
+              <button class="tbtn" onclick="insertHR()" title="Divider">—</button>
+              <button class="tbtn" onclick="insertBlockquote()" title="Blockquote">" "</button>
+              <button class="tbtn" onclick="insertLink()" title="Insert Link">🔗</button>
+              <div class="tbtn-sep"></div>
+              <!-- Clear -->
+              <button class="tbtn" onclick="execCmd('removeFormat')" title="Clear Formatting" style="font-size:10px;">✕ fmt</button>
+            </div>
+            <!-- Color pickers -->
+            <div class="editor-color-picker" id="colorPickerTextColor">
+              ${['#1a0a00','#ff2d78','#b200ff','#00cfcf','#aaff00','#ff6b00','#ffffff','#888888','#e63946','#2d6a4f','#1d3557','#f4a261'].map(c=>`<div class="ecolor" style="background:${c}" onclick="applyEditorColor('textColor','${c}')" title="${c}"></div>`).join('')}
+            </div>
+            <div class="editor-color-picker" id="colorPickerHiliteColor">
+              ${['#fff176','#ffcdd2','#f8bbd0','#e1bee7','#c5cae9','#b2dfdb','#dcedc8','#ffe0b2','transparent'].map(c=>`<div class="ecolor" style="background:${c === 'transparent' ? 'repeating-linear-gradient(45deg,#ccc,#ccc 2px,white 2px,white 6px)'" onclick="applyEditorColor('hiliteColor','${c}')" title="${c === 'transparent' ? 'none' : c}"></div>`).join('')}
             </div>
             <div class="body-editor" id="artBody" contenteditable="true" spellcheck="true"></div>
           </div>
@@ -2933,7 +2999,41 @@ function removeCoverImage(){
   document.getElementById('coverUploadArea').style.display='block';
 }
 function execCmd(c){document.getElementById('artBody').focus();document.execCommand(c,false,null);}
-function insertH2(){document.getElementById('artBody').focus();document.execCommand('formatBlock',false,'h2');}
+function execCmdVal(c,v){document.getElementById('artBody').focus();document.execCommand(c,false,v);}
+function execBlock(tag){document.getElementById('artBody').focus();document.execCommand('formatBlock',false,tag);}
+function insertH2(){execBlock('h2');}
+function insertHR(){
+  document.getElementById('artBody').focus();
+  document.execCommand('insertHorizontalRule',false,null);
+}
+function insertBlockquote(){
+  document.getElementById('artBody').focus();
+  document.execCommand('formatBlock',false,'blockquote');
+}
+function insertLink(){
+  const url=prompt('Enter URL:');
+  if(url){document.getElementById('artBody').focus();document.execCommand('createLink',false,url);}
+}
+function toggleColorPicker(type){
+  const all=document.querySelectorAll('.editor-color-picker');
+  const el=document.getElementById('colorPicker'+type.charAt(0).toUpperCase()+type.slice(1));
+  if(!el)return;
+  const wasOpen=el.classList.contains('open');
+  all.forEach(p=>p.classList.remove('open'));
+  if(!wasOpen)el.classList.toggle('open');
+}
+function applyEditorColor(cmd,color){
+  document.getElementById('artBody').focus();
+  document.execCommand(cmd,false,color);
+  if(cmd==='textColor'){const s=document.getElementById('curTextColor');if(s)s.style.background=color;}
+  document.querySelectorAll('.editor-color-picker').forEach(p=>p.classList.remove('open'));
+}
+// Close color pickers when clicking outside
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.editor-toolbar')&&!e.target.closest('.editor-color-picker')){
+    document.querySelectorAll('.editor-color-picker').forEach(p=>p.classList.remove('open'));
+  }
+});
 function renderSPAdmin(){
   const stColors=['st0','st1','st2','st3','st4'];
   document.getElementById('spGrid').innerHTML=DB.style.map((p,i)=>`
