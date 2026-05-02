@@ -1655,7 +1655,9 @@ input, textarea, [contenteditable], .body-editor, #artBody, .cmt-input, .art-cmt
     }
   });
   document.addEventListener('selectstart',function(e){
-    if(!['INPUT','TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
+    const t=e.target;
+    if(t.isContentEditable||t.id==='artBody'||t.closest('#artBody')||t.closest('[contenteditable]'))return;
+    if(!['INPUT','TEXTAREA'].includes(t.tagName)) e.preventDefault();
   });
 })();
 function openSubscribeModal(){
