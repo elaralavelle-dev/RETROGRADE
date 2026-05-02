@@ -526,6 +526,7 @@ footer{background:#1a0a00;color:white;padding:52px 32px 28px;border-top:4px soli
 .tbtn-color{width:22px;height:22px;padding:0;border:2px solid rgba(255,255,255,.3);border-radius:3px;cursor:pointer;}
 .tbtn-select{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:4px 6px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;border-radius:3px;outline:none;}
 .tbtn-select:hover{background:rgba(255,255,255,.12);}
+.tbtn-select option{background:#1a1a2e;color:white;}
 .editor-color-picker{position:absolute;z-index:999;background:#1a1a24;border:1px solid rgba(255,255,255,.15);padding:8px;display:none;flex-wrap:wrap;gap:5px;width:160px;border-radius:4px;}
 .editor-color-picker.open{display:flex;}
 .ecolor{width:22px;height:22px;border-radius:3px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;}
@@ -2155,15 +2156,44 @@ async function handleModalSubscribe(e){
               <button class="tbtn" onclick="insertBlockquote()" title="Blockquote">" "</button>
               <button class="tbtn" onclick="insertLink()" title="Insert Link">🔗</button>
               <div class="tbtn-sep"></div>
+              <!-- Spacing -->
+              <select class="tbtn-select" onchange="setLineSpacing(this.value);this.value=''" title="Line Spacing">
+                <option value="">Spacing</option>
+                <option value="1">1.0</option>
+                <option value="1.5">1.5</option>
+                <option value="1.8">1.8</option>
+                <option value="2">2.0</option>
+                <option value="2.5">2.5</option>
+                <option value="3">3.0</option>
+              </select>
               <!-- Clear -->
               <button class="tbtn" onclick="execCmd('removeFormat')" title="Clear Formatting" style="font-size:10px;">✕ fmt</button>
             </div>
             <!-- Color pickers -->
             <div class="editor-color-picker" id="colorPickerTextColor">
-              ${['#1a0a00','#ff2d78','#b200ff','#00cfcf','#aaff00','#ff6b00','#ffffff','#888888','#e63946','#2d6a4f','#1d3557','#f4a261'].map(c=>`<div class="ecolor" style="background:${c}" onclick="applyEditorColor('textColor','${c}')" title="${c}"></div>`).join('')}
+              <div class="ecolor" style="background:#1a0a00" onclick="applyEditorColor('textColor','#1a0a00')" title="Black"></div>
+              <div class="ecolor" style="background:#ff2d78" onclick="applyEditorColor('textColor','#ff2d78')" title="Pink"></div>
+              <div class="ecolor" style="background:#b200ff" onclick="applyEditorColor('textColor','#b200ff')" title="Purple"></div>
+              <div class="ecolor" style="background:#00cfcf" onclick="applyEditorColor('textColor','#00cfcf')" title="Teal"></div>
+              <div class="ecolor" style="background:#e63946" onclick="applyEditorColor('textColor','#e63946')" title="Red"></div>
+              <div class="ecolor" style="background:#ff6b00" onclick="applyEditorColor('textColor','#ff6b00')" title="Orange"></div>
+              <div class="ecolor" style="background:#2d6a4f" onclick="applyEditorColor('textColor','#2d6a4f')" title="Green"></div>
+              <div class="ecolor" style="background:#1d3557" onclick="applyEditorColor('textColor','#1d3557')" title="Navy"></div>
+              <div class="ecolor" style="background:#888888" onclick="applyEditorColor('textColor','#888888')" title="Grey"></div>
+              <div class="ecolor" style="background:#ffffff;border:1px solid #555" onclick="applyEditorColor('textColor','#ffffff')" title="White"></div>
+              <div class="ecolor" style="background:#f4a261" onclick="applyEditorColor('textColor','#f4a261')" title="Peach"></div>
+              <div class="ecolor" style="background:#aaff00" onclick="applyEditorColor('textColor','#aaff00')" title="Lime"></div>
             </div>
             <div class="editor-color-picker" id="colorPickerHiliteColor">
-              ${['#fff176','#ffcdd2','#f8bbd0','#e1bee7','#c5cae9','#b2dfdb','#dcedc8','#ffe0b2','transparent'].map(c=>`<div class="ecolor" style="background:${c === 'transparent' ? 'repeating-linear-gradient(45deg,#ccc,#ccc 2px,white 2px,white 6px)'" onclick="applyEditorColor('hiliteColor','${c}')" title="${c === 'transparent' ? 'none' : c}"></div>`).join('')}
+              <div class="ecolor" style="background:#fff176" onclick="applyEditorColor('hiliteColor','#fff176')" title="Yellow"></div>
+              <div class="ecolor" style="background:#ffcdd2" onclick="applyEditorColor('hiliteColor','#ffcdd2')" title="Pink"></div>
+              <div class="ecolor" style="background:#f8bbd0" onclick="applyEditorColor('hiliteColor','#f8bbd0')" title="Rose"></div>
+              <div class="ecolor" style="background:#e1bee7" onclick="applyEditorColor('hiliteColor','#e1bee7')" title="Lavender"></div>
+              <div class="ecolor" style="background:#c5cae9" onclick="applyEditorColor('hiliteColor','#c5cae9')" title="Periwinkle"></div>
+              <div class="ecolor" style="background:#b2dfdb" onclick="applyEditorColor('hiliteColor','#b2dfdb')" title="Mint"></div>
+              <div class="ecolor" style="background:#dcedc8" onclick="applyEditorColor('hiliteColor','#dcedc8')" title="Sage"></div>
+              <div class="ecolor" style="background:#ffe0b2" onclick="applyEditorColor('hiliteColor','#ffe0b2')" title="Peach"></div>
+              <div class="ecolor" style="background:repeating-linear-gradient(45deg,#ccc,#ccc 2px,white 2px,white 6px)" onclick="applyEditorColor('hiliteColor','transparent')" title="None"></div>
             </div>
             <div class="body-editor" id="artBody" contenteditable="true" spellcheck="true"></div>
           </div>
@@ -3023,10 +3053,32 @@ function toggleColorPicker(type){
   if(!wasOpen)el.classList.toggle('open');
 }
 function applyEditorColor(cmd,color){
-  document.getElementById('artBody').focus();
-  document.execCommand(cmd,false,color);
+  const body=document.getElementById('artBody');
+  body.focus();
+  if(cmd==='hiliteColor'&&color==='transparent'){
+    // Remove highlight by applying white or removing background
+    document.execCommand('hiliteColor',false,'rgba(0,0,0,0)');
+  } else {
+    document.execCommand(cmd,false,color);
+  }
   if(cmd==='textColor'){const s=document.getElementById('curTextColor');if(s)s.style.background=color;}
   document.querySelectorAll('.editor-color-picker').forEach(p=>p.classList.remove('open'));
+}
+function setLineSpacing(val){
+  if(!val)return;
+  const body=document.getElementById('artBody');
+  body.focus();
+  // Apply to selected paragraphs or whole body
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount>0){
+    const range=sel.getRangeAt(0);
+    const container=range.commonAncestorContainer;
+    const block=container.nodeType===1?container:container.parentElement;
+    const closest=block.closest('p,h1,h2,h3,h4,li,div');
+    if(closest){closest.style.lineHeight=val;return;}
+  }
+  // If nothing selected, apply to all block elements
+  body.querySelectorAll('p,h1,h2,h3,h4,li,div').forEach(el=>el.style.lineHeight=val);
 }
 // Close color pickers when clicking outside
 document.addEventListener('click',function(e){
