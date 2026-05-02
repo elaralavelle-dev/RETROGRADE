@@ -1739,6 +1739,7 @@ async function handleModalSubscribe(e){
     <a onclick="showView('site');filterCat('Film & TV',null);toggleMobMenu()">Film & TV</a>
     <a onclick="showView('site');filterCat('Quizzes',null);toggleMobMenu()">Quizzes</a>
     <a onclick="showView('site');filterCat('Real Talk',null);toggleMobMenu()">Real Talk</a>
+    <a onclick="showView('site');filterCat('Gaming',null);toggleMobMenu()">Gaming</a>
     <a onclick="showView('view-community');renderCommunity();toggleMobMenu()">The Wall ✦</a>
   </div>
 
@@ -1766,6 +1767,7 @@ async function handleModalSubscribe(e){
       <div class="cat-btn" onclick="filterCat('Film & TV',this)">Film & TV</div>
       <div class="cat-btn" onclick="filterCat('Quizzes',this)">Quizzes</div>
       <div class="cat-btn" onclick="filterCat('Real Talk',this)">Real Talk</div>
+      <div class="cat-btn" onclick="filterCat('Gaming',this)">Gaming</div>
     </div>
 
     <div class="main-grid">
@@ -1890,7 +1892,7 @@ async function handleModalSubscribe(e){
       <div class="footer-top">
         <div><div class="f-logo" id="footerLogo">RETROGRADE</div><div class="f-tag" id="footerTag"></div></div>
         <div><div class="f-col-ttl">Sections</div><div class="f-links"><a href="#">Culture</a><a href="#">Style</a><a href="#">Beauty</a><a href="#">Music</a><a href="#">Film & TV</a></div></div>
-        <div><div class="f-col-ttl">Features</div><div class="f-links"><a href="#">Quizzes</a><a href="#">Star Signs</a><a href="#">Real Talk</a><a href="#">Style File</a></div></div>
+        <div><div class="f-col-ttl">Features</div><div class="f-links"><a href="#">Quizzes</a><a href="#">Star Signs</a><a href="#">Real Talk</a><a href="#">Gaming</a><a href="#">Style File</a></div></div>
         <div><div class="f-col-ttl">About</div><div class="f-links"><a href="#">About</a><a href="#">Write for Us</a><a href="#">Newsletter</a><a href="#">Contact</a></div></div>
       </div>
       <div class="footer-bottom">
@@ -2116,7 +2118,7 @@ async function handleModalSubscribe(e){
           <div class="panel">
             <div class="panel-ttl">Details</div>
             <div class="fgroup" style="margin-bottom:12px"><label class="flabel">Category</label>
-              <select class="fselect" id="artCat"><option>Pop Culture</option><option>Style</option><option>Music</option><option>Beauty</option><option>Film & TV</option><option>Quizzes</option><option>Real Talk</option></select>
+              <select class="fselect" id="artCat"><option>Pop Culture</option><option>Style</option><option>Music</option><option>Beauty</option><option>Film & TV</option><option>Quizzes</option><option>Real Talk</option><option>Gaming</option></select>
             </div>
             <div class="fgroup" style="margin-bottom:12px"><label class="flabel">Author</label><input class="finput" id="artAuthor" placeholder="Retrograde Staff"></div>
             <div class="fgroup"><label class="flabel">Read Time</label><input class="finput" id="artReadTime" placeholder="5 min read"></div>
